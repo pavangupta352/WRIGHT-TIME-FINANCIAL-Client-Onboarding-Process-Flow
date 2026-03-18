@@ -356,7 +356,8 @@ flowchart TD
     B --> C{"Form\ncomplete?"}
     C -- Yes --> D["Client submits form"]
     C -- No --> E["Automated reminders:\nDay 1 → Day 3 → Day 7"]
-    E --> F{"Client\ncompletes?"}
+    E --> E2["📢 Day 3: Advisor/Processor\nnotified if still incomplete"]
+    E2 --> F{"Client\ncompletes?"}
     F -- Yes --> D
     F -- No --> G["Abandonment follow-up\ntriggered (1, 3, 7 days)"]
     D --> H["✅ Webhook fires to\nour server"]
@@ -375,8 +376,9 @@ flowchart TD
       <tr><td>1.1</td><td><span class="badge badge-team">Advisor</span></td><td>Sends personalized PreciseFP intake link to prospect via email or text</td></tr>
       <tr><td>1.2</td><td><span class="badge badge-client">Client</span></td><td>Opens the link and fills out the form: demographics, financials, beneficiaries, spouse info, product interests</td></tr>
       <tr><td>1.3</td><td><span class="badge badge-platform">PreciseFP</span></td><td>Validates form completeness. If incomplete, sends automated reminders at Day 1, Day 3, and Day 7</td></tr>
-      <tr><td>1.4</td><td><span class="badge badge-system">System</span></td><td>If the client never completes the form, an abandonment follow-up sequence triggers (shorter cadence: 1, 3, 7 days)</td></tr>
-      <tr><td>1.5</td><td><span class="badge badge-client">Client</span></td><td>Submits the completed form — this triggers the entire automation pipeline</td></tr>
+      <tr><td>1.4</td><td><span class="badge badge-system">System</span></td><td><strong>By Day 3:</strong> If form is still incomplete, the assigned advisor and/or processor is notified via Wealthbox task — allowing them to follow up via phone or text</td></tr>
+      <tr><td>1.5</td><td><span class="badge badge-system">System</span></td><td>If the client never completes the form, an abandonment follow-up sequence triggers (shorter cadence: 1, 3, 7 days)</td></tr>
+      <tr><td>1.6</td><td><span class="badge badge-client">Client</span></td><td>Submits the completed form — this triggers the entire automation pipeline</td></tr>
     </tbody>
   </table>
 </div>
@@ -441,7 +443,8 @@ flowchart TD
   </table>
 
   <div class="highlight-box">
-    <strong>⚠️ Licensing Mismatch Alert:</strong> If the assigned advisor does not hold the required license for a selected product (e.g., writing Advisory business without Series 65), the system automatically creates a HIGH priority alert task visible to all processing staff before the application can proceed.
+    <strong>⚠️ Licensing Mismatch Alert:</strong> If the assigned advisor does not hold the required license for a selected product (e.g., writing Advisory business without Series 65), the system automatically creates a HIGH priority alert task visible to all processing staff before the application can proceed.<br><br>
+    <em>Reference: PRD Section 2.2 — "The system must be aware of advisor licensing levels (Series 6/63 = Registered Rep via Innovation Partners LLC; Series 65 = Advisory via IP Financial Services LLC) to ensure advisors only receive clients for products they are licensed to sell." Also Section 4.1 — "Advisor licensing does not cover selected product → System flags mismatch; processing team alerted before application submission."</em>
   </div>
 </div>
 
@@ -462,20 +465,26 @@ flowchart TD
     </tbody>
   </table>
 
+  <div class="highlight-box">
+    <strong>💡 Client Portal Option:</strong> ShareFile (or a password-protected page on the Wright Time website) can serve as a single entry point for clients — giving them one place to access all their documents, upload files, and find links to RightCapital, PreciseFP, and Calendly. This eliminates the "where do I go?" problem and creates a unified client experience without adding a new platform.
+  </div>
+
   <h3>Example Folder Structure</h3>
+  <p>Client folders are organized <strong>under the assigned advisor's folder</strong> to prevent name collisions (e.g., two clients named "John Smith" under different advisors).</p>
   <div class="folder-tree">
-    <span class="folder">📁 Smith, Jane/</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Life Insurance/</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Applications/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Underwriting/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Policies/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Advisory/</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Account Opening/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Statements/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Transfers/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Compliance/</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Correspondence/</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Client Uploads/</span>
+    <span class="folder">📁 Maloney, Mark/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">📁 Smith, Jane/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Life Insurance/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Applications/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Underwriting/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Policies/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Advisory/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Account Opening/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Statements/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Transfers/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Compliance/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Correspondence/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Client Uploads/</span>
   </div>
 </div>
 
