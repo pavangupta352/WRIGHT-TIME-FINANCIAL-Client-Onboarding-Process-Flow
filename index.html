@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wright Time Financial — Client Onboarding Flow</title>
+<script>
+(function(){
+  var hash = 'WTF2026';
+  var stored = sessionStorage.getItem('wtf_auth');
+  if (stored !== hash) {
+    var pw = prompt('Enter password to view this document:');
+    if (pw !== hash) {
+      document.documentElement.innerHTML = '<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#666;"><h2>Access Denied</h2></body>';
+      return;
+    }
+    sessionStorage.setItem('wtf_auth', hash);
+  }
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+    text-align: center;
+    padding: 60px 40px;
+    page-break-after: always;
+  }
+
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .cover .subtitle {
+    font-size: 20px;
+    font-weight: 300;
+    opacity: 0.85;
+    margin-bottom: 40px;
+  }
+
+  .cover .meta {
+    font-size: 14px;
+    opacity: 0.6;
+    margin-top: 60px;
+  }
+
+  .cover .logo {
+    font-size: 28px;
+    font-weight: 600;
+    color: #c9a84c;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 40px;
+    page-break-after: always;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #c9a84c;
+  }
+
+  h2 .phase-num {
+    color: #c9a84c;
+    margin-right: 8px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f3460;
+    margin: 24px 0 12px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 16px;
+  }
+
+  .phase-description {
+    background: #f8f9fb;
+    border-left: 4px solid #c9a84c;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 32px 0;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: #1a1a2e;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) { background: #f8f9fb; }
+  tbody tr:hover { background: #eef2ff; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-client { background: #dbeafe; color: #1d4ed8; }
+  .badge-system { background: #ede9fe; color: #6d28d9; }
+  .badge-team { background: #d1fae5; color: #047857; }
+  .badge-platform { background: #fef3c7; color: #b45309; }
+
+  .diagram-container {
+    background: #f8f9fb;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 30px 20px;
+    margin: 20px 0 32px 0;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .overview-card {
+    background: #f8f9fb;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    border-top: 4px solid #c9a84c;
+  }
+
+  .overview-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+
+  .overview-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .overview-card li {
+    font-size: 14px;
+    color: #555;
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .overview-card li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #c9a84c;
+    font-weight: 600;
+  }
+
+  .folder-tree {
+    background: #1a1a2e;
+    color: #a5f3fc;
+    padding: 20px 24px;
+    border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 16px 0;
+  }
+
+  .folder-tree .folder { color: #fbbf24; }
+  .folder-tree .subfolder { color: #a5f3fc; }
+
+  .highlight-box {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .highlight-box strong { color: #b45309; }
+
+  .security-box {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .security-box strong { color: #15803d; }
+
+  .platform-table td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @media print {
+    .cover { min-height: 100vh; }
+    .page { padding: 30px 20px; }
+    .diagram-container { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="logo">WRIGHT TIME FINANCIAL</div>
+  <h1>Client Onboarding<br>Process Flow</h1>
+  <div class="subtitle">Integration Platform — Complete Automation Pipeline</div>
+  <div style="display:flex; gap:24px; margin-top:40px; flex-wrap:wrap; justify-content:center;">
+    <div style="background:rgba(255,255,255,0.1); padding:16px 28px; border-radius:8px;">
+      <div style="font-size:28px; font-weight:700;">5</div>
+      <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Platforms</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1); padding:16px 28px; border-radius:8px;">
+      <div style="font-size:28px; font-weight:700;">0</div>
+      <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Manual Entry</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1); padding:16px 28px; border-radius:8px;">
+      <div style="font-size:28px; font-weight:700;">100%</div>
+      <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Automated</div>
+    </div>
+  </div>
+  <div class="meta">Prepared by Antonio &amp; Pavan — March 2026<br>CONFIDENTIAL — For Internal Use Only</div>
+</div>
+
+<!-- PAGE 1: OVERVIEW -->
+<div class="page">
+  <h2>System Overview</h2>
+  <p>One form submission triggers everything automatically — zero manual data entry for staff.</p>
+
+  <div class="diagram-container">
+    <div class="mermaid">
+flowchart LR
+    A["🧑 Client fills out\nPreciseFP form"] --> B["⚡ Webhook fires\nto our server"]
+    B --> C["📋 Wealthbox\nContact + Tasks\n+ Pipeline"]
+    B --> D["📁 ShareFile\nFolders + Upload Link"]
+    B --> E["📊 RightCapital\nFlagged for setup"]
+    B --> F["🗄️ PostgreSQL\nAudit Trail"]
+    style A fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style B fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style C fill:#059669,stroke:#047857,color:#fff
+    style D fill:#059669,stroke:#047857,color:#fff
+    style E fill:#d97706,stroke:#b45309,color:#fff
+    style F fill:#475569,stroke:#334155,color:#fff
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <h4>What the Client Does</h4>
+      <ul>
+        <li>Fills out PreciseFP intake form (one time)</li>
+        <li>Clicks secure upload link for documents</li>
+        <li>Links accounts in RightCapital</li>
+        <li>Books meetings via Calendly link</li>
+      </ul>
+    </div>
+    <div class="overview-card">
+      <h4>What Happens Automatically</h4>
+      <ul>
+        <li>Wealthbox contact created with all data</li>
+        <li>Tags, pipeline, and tasks assigned</li>
+        <li>ShareFile folder structure created</li>
+        <li>Follow-up sequences if unresponsive</li>
+      </ul>
+    </div>
+    <div class="overview-card">
+      <h4>What the Team Does</h4>
+      <ul>
+        <li>Receives task notifications in Wealthbox</li>
+        <li>Advisor handles discovery call</li>
+        <li>Processing staff collects documents</li>
+        <li>Advisor builds plan in RightCapital</li>
+      </ul>
+    </div>
+    <div class="overview-card">
+      <h4>Platforms Used</h4>
+      <ul>
+        <li><strong>PreciseFP</strong> — Client intake</li>
+        <li><strong>Wealthbox</strong> — CRM (source of truth)</li>
+        <li><strong>ShareFile</strong> — Document storage</li>
+        <li><strong>RightCapital</strong> — Financial planning</li>
+        <li><strong>Calendly</strong> — Scheduling (just a link)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: CLIENT INTAKE -->
+<div class="page">
+  <h2><span class="phase-num">Phase 1</span> Client Intake</h2>
+  <div class="phase-description">The client receives a PreciseFP link from their advisor and fills out the intake form. If incomplete, automated reminders follow up.</div>
+
+  <div class="diagram-container">
+    <div class="mermaid">
+flowchart TD
+    A["Advisor sends PreciseFP\nintake link via email/text"] --> B["Client opens link\nand fills out form"]
+    B --> C{"Form\ncomplete?"}
+    C -- Yes --> D["Client submits form"]
+    C -- No --> E["Automated reminders:\nDay 1 → Day 3 → Day 7"]
+    E --> F{"Client\ncompletes?"}
+    F -- Yes --> D
+    F -- No --> G["Abandonment follow-up\ntriggered (1, 3, 7 days)"]
+    D --> H["✅ Webhook fires to\nour server"]
+    style A fill:#059669,stroke:#047857,color:#fff
+    style B fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style D fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style E fill:#d97706,stroke:#b45309,color:#fff
+    style G fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style H fill:#7c3aed,stroke:#6d28d9,color:#fff
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Step</th><th>Actor</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>1.1</td><td><span class="badge badge-team">Advisor</span></td><td>Sends personalized PreciseFP intake link to prospect via email or text</td></tr>
+      <tr><td>1.2</td><td><span class="badge badge-client">Client</span></td><td>Opens the link and fills out the form: demographics, financials, beneficiaries, spouse info, product interests</td></tr>
+      <tr><td>1.3</td><td><span class="badge badge-platform">PreciseFP</span></td><td>Validates form completeness. If incomplete, sends automated reminders at Day 1, Day 3, and Day 7</td></tr>
+      <tr><td>1.4</td><td><span class="badge badge-system">System</span></td><td>If the client never completes the form, an abandonment follow-up sequence triggers (shorter cadence: 1, 3, 7 days)</td></tr>
+      <tr><td>1.5</td><td><span class="badge badge-client">Client</span></td><td>Submits the completed form — this triggers the entire automation pipeline</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGE 3: AUTOMATED PROCESSING -->
+<div class="page">
+  <h2><span class="phase-num">Phase 2</span> Automated Processing</h2>
+  <div class="phase-description">Our server receives the webhook, fetches data from PreciseFP, extracts 30+ fields, scrubs SSN, and determines products.</div>
+
+  <div class="diagram-container">
+    <div class="mermaid">
+flowchart TD
+    A["Webhook received"] --> B{"Already\nprocessed?"}
+    B -- Yes --> C["Skip (idempotency)"]
+    B -- No --> D["Fetch engagement data\nfrom PreciseFP API"]
+    D --> E["Extract 30+ fields:\ndemographics, financials,\nspouse, beneficiaries"]
+    E --> F["🔒 SSN scrubbed\nimmediately"]
+    F --> G["Determine products\nfrom template ID"]
+    G --> H{"Existing\nclient?"}
+    H -- New --> I["Create Wealthbox contact\n+ tags + custom fields\n+ pipeline + spouse"]
+    H -- Existing --> J["Update contact\nProcess net-new\nproducts only"]
+    style A fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style D fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style E fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style F fill:#dc2626,stroke:#b91c1c,color:#fff
+    style G fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style I fill:#059669,stroke:#047857,color:#fff
+    style J fill:#059669,stroke:#047857,color:#fff
+    </div>
+  </div>
+
+  <div class="security-box">
+    <strong>🔒 Security:</strong> SSN is extracted for processing but immediately scrubbed from memory. It is never stored in our database, never sent to Wealthbox, ShareFile, or any downstream platform. All data encrypted with AES-256-GCM. Full audit trail for FINRA/SEC compliance.
+  </div>
+
+  <h3>New Client vs. Returning Client</h3>
+  <table>
+    <thead><tr><th>Scenario</th><th>What Happens</th></tr></thead>
+    <tbody>
+      <tr><td><strong>New Client</strong></td><td>Full Wealthbox contact created with tags (Prospect + product tags), custom fields (Anniversary Date, Product Path, Referral Source), pipeline opportunities, spouse linked as household member, licensing verified</td></tr>
+      <tr><td><strong>Returning Client</strong></td><td>Existing contact found by email — base data NOT re-entered. Only net-new products processed. Tags merged, custom fields updated. No duplicate contacts created.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGE 4: TASKS -->
+<div class="page">
+  <h2><span class="phase-num">Phase 3</span> Wealthbox Task Creation</h2>
+  <div class="phase-description">Tasks are auto-created in Wealthbox and assigned to the right team member with proper due dates.</div>
+
+  <table>
+    <thead><tr><th>Task</th><th>Due Date</th><th>Assigned To</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Discovery Call</strong></td><td>+2 business days</td><td>Assigned Advisor</td><td>🔴 High</td></tr>
+      <tr><td><strong>Document Collection</strong></td><td>+5 business days</td><td>Processing Staff (Luisa/Isah)</td><td>🟡 Medium</td></tr>
+      <tr><td><strong>Verify Advisor Licensing</strong><br><em>Life Insurance, Annuities, Alternatives</em></td><td>+1 business day</td><td>Processing Team</td><td>🔴 High</td></tr>
+      <tr><td><strong>Advisory Account Setup</strong><br><em>Advisory products only</em></td><td>+5 business days</td><td>Advisor</td><td>🟡 Medium</td></tr>
+      <tr><td><strong>Financial Plan Preparation</strong><br><em>Financial Planning only</em></td><td>+7 business days</td><td>Advisor</td><td>🟡 Medium</td></tr>
+      <tr><td><strong>RightCapital Setup</strong><br><em>Financial Planning, Advisory, Annuities</em></td><td>+3 business days</td><td>Processing Team</td><td>🟡 Medium</td></tr>
+      <tr><td><strong>Annual Review Reminder</strong><br><em>New clients only</em></td><td>11 months from now</td><td>Advisor</td><td>🟡 Medium</td></tr>
+    </tbody>
+  </table>
+
+  <div class="highlight-box">
+    <strong>⚠️ Licensing Mismatch Alert:</strong> If the assigned advisor does not hold the required license for a selected product (e.g., writing Advisory business without Series 65), the system automatically creates a HIGH priority alert task visible to all processing staff before the application can proceed.
+  </div>
+</div>
+
+<!-- PAGE 5: SHAREFILE -->
+<div class="page">
+  <h2><span class="phase-num">Phase 4</span> ShareFile Document Setup</h2>
+  <div class="phase-description">Client folder created automatically with product-specific subfolders. Client receives a secure upload link — no account needed.</div>
+
+  <table>
+    <thead><tr><th>Step</th><th>Actor</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>4.1</td><td><span class="badge badge-system">System</span></td><td>Creates client folder named "Last, First" (e.g., "Smith, Jane")</td></tr>
+      <tr><td>4.2</td><td><span class="badge badge-system">System</span></td><td>Creates product-specific subfolders based on selected products</td></tr>
+      <tr><td>4.3</td><td><span class="badge badge-system">System</span></td><td>Creates standard folders: Compliance, Correspondence, Client Uploads</td></tr>
+      <tr><td>4.4</td><td><span class="badge badge-system">System</span></td><td>Generates a secure upload link — client does NOT need a ShareFile account to upload</td></tr>
+      <tr><td>4.5</td><td><span class="badge badge-client">Client</span></td><td>Receives upload link via email, clicks it, and uploads documents directly</td></tr>
+      <tr><td>4.6</td><td><span class="badge badge-system">System</span></td><td>For ongoing document access (annual reviews, etc.), a free ShareFile client account is created</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Example Folder Structure</h3>
+  <div class="folder-tree">
+    <span class="folder">📁 Smith, Jane/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Life Insurance/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Applications/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Underwriting/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Policies/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Advisory/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Account Opening/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Statements/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📄 Transfers/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Compliance/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Correspondence/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="subfolder">📁 Client Uploads/</span>
+  </div>
+</div>
+
+<!-- PAGE 6: RIGHTCAPITAL + FOLLOW-UP -->
+<div class="page">
+  <h2><span class="phase-num">Phase 5</span> RightCapital Setup</h2>
+  <div class="phase-description">RightCapital has no public API. We leverage the native PreciseFP integration and flag for manual account linking.</div>
+
+  <table>
+    <thead><tr><th>Step</th><th>Actor</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>5.1</td><td><span class="badge badge-system">System</span></td><td>Flags client for RightCapital population (creates Wealthbox task)</td></tr>
+      <tr><td>5.2</td><td><span class="badge badge-platform">PreciseFP</span></td><td>Native PreciseFP → RightCapital integration populates the financial profile</td></tr>
+      <tr><td>5.3</td><td><span class="badge badge-client">Client</span></td><td>Receives RightCapital login and links their financial accounts (only manual step)</td></tr>
+      <tr><td>5.4</td><td><span class="badge badge-team">Advisor</span></td><td>Reviews imported data and builds the financial plan</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:40px;"><span class="phase-num">Phase 6</span> Follow-Up &amp; Ongoing</h2>
+  <div class="phase-description">Automated follow-up sequences for unresponsive clients. Escalation to advisor after 3 failed attempts.</div>
+
+  <div class="diagram-container">
+    <div class="mermaid">
+flowchart LR
+    A["Client\nunresponsive"] --> B["Day 3:\nReminder task"]
+    B --> C["Day 7:\nReminder task"]
+    C --> D["Day 14:\nFinal reminder"]
+    D --> E{"Response?"}
+    E -- No --> F["🚨 ESCALATE\nto Advisor"]
+    E -- Yes --> G["✅ Sequence\ncomplete"]
+    style A fill:#d97706,stroke:#b45309,color:#fff
+    style B fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style C fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style D fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style F fill:#dc2626,stroke:#b91c1c,color:#fff
+    style G fill:#059669,stroke:#047857,color:#fff
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Scenario</th><th>Cadence</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><strong>New prospect unresponsive</strong></td><td>Day 3, Day 7, Day 14</td><td>Automated task reminders in Wealthbox</td></tr>
+      <tr><td><strong>Incomplete intake form</strong></td><td>Day 1, Day 3, Day 7</td><td>Shorter cadence reminders</td></tr>
+      <tr><td><strong>After 3 failed attempts</strong></td><td>Immediate</td><td>HIGH priority escalation task to advisor + note on contact</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGE 7: AUDIT + PLATFORMS -->
+<div class="page">
+  <h2><span class="phase-num">Always Active</span> Audit Trail &amp; Security</h2>
+  <div class="phase-description">Every action is logged to PostgreSQL for FINRA/SEC compliance. Full audit trail maintained.</div>
+
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sync Log</strong></td><td>Every API call to every platform logged with action, status, duration, and error details</td></tr>
+      <tr><td><strong>Webhook Events</strong></td><td>Every incoming webhook recorded with idempotency keys — prevents duplicate processing</td></tr>
+      <tr><td><strong>Client Mapping</strong></td><td>Cross-platform ID linking: PreciseFP ↔ Wealthbox ↔ ShareFile ↔ RightCapital</td></tr>
+      <tr><td><strong>Follow-Up State</strong></td><td>Tracks which step each client is at in the follow-up sequence</td></tr>
+      <tr><td><strong>Bi-Directional Sync</strong></td><td>Changes in Wealthbox push back to PreciseFP. Conflicts flagged for human review.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:40px;">Platform Responsibilities</h2>
+  <table class="platform-table">
+    <thead><tr><th>Platform</th><th>Role</th><th>Who Uses It</th></tr></thead>
+    <tbody>
+      <tr><td>PreciseFP</td><td>Client intake forms (dynamic per product line)</td><td>Client fills out form; system reads via API</td></tr>
+      <tr><td>Wealthbox</td><td>CRM — single source of truth for contacts, tasks, pipelines</td><td>Advisors + processing staff daily; system writes via API</td></tr>
+      <tr><td>ShareFile</td><td>Secure document storage with standardized folder structures</td><td>Client uploads via link; team manages; system creates via API</td></tr>
+      <tr><td>RightCapital</td><td>Financial planning (account aggregation, plan building)</td><td>Client links accounts; advisor builds plans</td></tr>
+      <tr><td>Calendly</td><td>Meeting scheduling</td><td>Client books via link; advisor manages calendar</td></tr>
+    </tbody>
+  </table>
+
+  <div class="security-box" style="margin-top:30px;">
+    <strong>🔒 Security Summary:</strong><br>
+    • AES-256-GCM encryption for all data at rest<br>
+    • TLS 1.2+ for all data in transit<br>
+    • SSN never stored — scrubbed immediately after extraction<br>
+    • PII masked in all logs (emails, phone numbers, SSN)<br>
+    • Webhook authentication (HMAC-SHA256 for Wealthbox, shared secret for PreciseFP)<br>
+    • Admin API key required for all management endpoints<br>
+    • Full audit trail for SEC examination readiness
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      fontSize: '14px',
+      fontFamily: 'Inter, sans-serif'
+    }
+  });
+</script>
+</body>
+</html>
